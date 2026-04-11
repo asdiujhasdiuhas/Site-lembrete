@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EFGNL – Lembretes</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #0B1F3A;
+    --gold:   #C9A84C;
+    --gold2:  #E8C97A;
+    --cream:  #F5F0E8;
+    --red:    #C0392B;
+    --green:  #1A6B3C;
+    --card:   #FFFFFF;
+    --muted:  #8E9BAD;
+    --border: #D9CEB8;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--cream);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, #1a3a60 0%, transparent 70%),
+      repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,.06) 39px, rgba(201,168,76,.06) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,.06) 39px, rgba(201,168,76,.06) 40px);
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 40px 20px;
+    border-bottom: 1px solid rgba(201,168,76,.25);
+    position: sticky; top:0; z-index:100;
+    background: rgba(11,31,58,.88);
+    backdrop-filter: blur(10px);
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-badge {
+    width: 56px; height: 56px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold2) 100%);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 20px rgba(201,168,76,.4);
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-badge::before {
+    content: '';
+    position: absolute; inset: 3px;
+    border: 1.5px solid rgba(255,255,255,.35);
+    border-radius: 9px;
+  }
+  .logo-text-badge {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; font-weight: 900;
+    color: var(--navy);
+    letter-spacing: -0.5px;
+  }
+
+  .logo-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    color: var(--gold2);
+    letter-spacing: 2px;
+  }
+  .logo-title p {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-date {
+    text-align: right;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: .5px;
+  }
+  .header-date strong {
+    display: block;
+    font-size: 18px;
+    color: var(--gold2);
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+  }
+
+  /* ── MAIN ── */
+  main { max-width: 900px; margin: 0 auto; padding: 36px 24px 60px; }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 8px; margin-bottom: 28px;
+  }
+  .tab {
+    padding: 9px 22px;
+    border-radius: 50px;
+    border: 1.5px solid rgba(201,168,76,.3);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+    letter-spacing: .3px;
+  }
+  .tab.active {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    border-color: transparent;
+    color: var(--navy);
+    font-weight: 700;
+    box-shadow: 0 3px 14px rgba(201,168,76,.35);
+  }
+  .tab:hover:not(.active) { border-color: var(--gold); color: var(--gold2); }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--cream);
+  }
+  .section-title span { color: var(--gold); }
+
+  /* ── ADD FORM ── */
+  .add-form {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(201,168,76,.18);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 12px;
+    align-items: end;
+  }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .form-group input,
+  .form-group select {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(201,168,76,.22);
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--gold); }
+  .form-group input::placeholder { color: var(--muted); }
+  .form-group select option { background: #1a2d45; color: var(--cream); }
+
+  .btn-add {
+    background: linear-gradient(135deg, var(--gold), var(--gold2));
+    color: var(--navy);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 700;
+    font-size: 22px;
+    cursor: pointer;
+    transition: transform .15s, box-shadow .15s;
+    box-shadow: 0 3px 12px rgba(201,168,76,.3);
+    line-height: 1;
+  }
+  .btn-add:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(201,168,76,.4); }
+  .btn-add:active { transform: translateY(0); }
+
+  .tipo-select {
+    padding: 12px 14px;
+  }
+
+  /* ── ITEMS ── */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+
+  .items-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .item-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 14px rgba(0,0,0,.12);
+    transition: transform .15s, box-shadow .15s;
+    position: relative;
+    overflow: hidden;
+    border-left: 5px solid transparent;
+    animation: slideIn .25s ease;
+  }
+  @keyframes slideIn {
+    from { opacity:0; transform: translateY(-10px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  .item-card:hover { transform: translateX(4px); box-shadow: 0 4px 22px rgba(0,0,0,.18); }
+
+  .item-card.prova    { border-left-color: var(--red); }
+  .item-card.atividade { border-left-color: #2980B9; }
+  .item-card.trabalho { border-left-color: var(--green); }
+  .item-card.outro    { border-left-color: #8E44AD; }
+  .item-card.done { opacity: .5; }
+  .item-card.done .item-title { text-decoration: line-through; }
+
+  .item-checkbox {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2.5px solid #D0D5DC;
+    cursor: pointer;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+    background: transparent;
+  }
+  .item-card.prova     .item-checkbox { border-color: var(--red); }
+  .item-card.atividade .item-checkbox { border-color: #2980B9; }
+  .item-card.trabalho  .item-checkbox { border-color: var(--green); }
+  .item-card.outro     .item-checkbox { border-color: #8E44AD; }
+  .item-checkbox.checked {
+    background: currentColor;
+    border-color: currentColor;
+  }
+  .item-checkbox:hover { transform: scale(1.15); }
+
+  .item-info { flex: 1; }
+  .item-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: #1a2535;
+    margin-bottom: 4px;
+  }
+  .item-meta {
+    display: flex; gap: 10px; align-items: center;
+  }
+  .badge {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .8px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 50px;
+    color: #fff;
+  }
+  .badge.prova    { background: var(--red); }
+  .badge.atividade { background: #2980B9; }
+  .badge.trabalho  { background: var(--green); }
+  .badge.outro     { background: #8E44AD; }
+
+  .item-date {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .item-date.urgente { color: var(--red); font-weight: 700; }
+
+  .item-actions {
+    display: flex; gap: 6px;
+  }
+  .btn-del {
+    background: none;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: all .15s;
+  }
+  .btn-del:hover { background: #fdecea; color: var(--red); }
+
+  /* ── STATS ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(201,168,76,.15);
+    border-radius: 14px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 34px;
+    color: var(--gold2);
+    line-height: 1;
+  }
+  .stat-label { font-size: 11px; color: var(--muted); margin-top: 5px; text-transform: uppercase; letter-spacing: .8px; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 660px) {
+    header { padding: 18px 20px; }
+    .add-form { grid-template-columns: 1fr 1fr; }
+    .btn-add { grid-column: span 2; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .logo-title p { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-badge">
+      <span class="logo-text-badge">EF</span>
+    </div>
+    <div class="logo-title">
+      <h1>EFGNL</h1>
+      <p>Painel de Estudos</p>
+    </div>
+  </div>
+  <div class="header-date">
+    <strong id="hDate">—</strong>
+    <span id="hDay">—</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="statTotal">0</div>
+      <div class="stat-label">Total</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statProva" style="color:#e88080">0</div>
+      <div class="stat-label">Provas</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statAtiv" style="color:#6ab4e8">0</div>
+      <div class="stat-label">Atividades</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="statDone" style="color:#6ec48a">0</div>
+      <div class="stat-label">Concluídos</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setFilter('todos')">Todos</button>
+    <button class="tab" onclick="setFilter('prova')">📝 Provas</button>
+    <button class="tab" onclick="setFilter('atividade')">📚 Atividades</button>
+    <button class="tab" onclick="setFilter('trabalho')">🗂️ Trabalhos</button>
+    <button class="tab" onclick="setFilter('outro')">📌 Outros</button>
+  </div>
+
+  <div class="section-header">
+    <h2 class="section-title">Lembretes <span>EFGNL</span></h2>
+  </div>
+
+  <div class="add-form">
+    <div class="form-group" style="grid-column: span 2">
+      <label>Descrição</label>
+      <input id="inDesc" type="text" placeholder="Ex: Prova de Matemática – Cap. 4" />
+    </div>
+    <div class="form-group">
+      <label>Data</label>
+      <input id="inDate" type="date" />
+    </div>
+    <div class="form-group">
+      <label>Tipo</label>
+      <select id="inTipo" class="tipo-select">
+        <option value="prova">📝 Prova</option>
+        <option value="atividade">📚 Atividade</option>
+        <option value="trabalho">🗂️ Trabalho</option>
+        <option value="outro">📌 Outro</option>
+      </select>
+    </div>
+    <button class="btn-add" onclick="addItem()">＋</button>
+  </div>
+
+  <div id="list" class="items-list"></div>
+
+</main>
+
+<script>
+  const DIAS = ['Domingo','Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado'];
+  const MESES = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const TIPO_LABEL = { prova:'Prova', atividade:'Atividade', trabalho:'Trabalho', outro:'Outro' };
+
+  const API = '/api/items';
+  let items = [];
+  let activeFilter = 'todos';
+
+  // Date display
+  const now = new Date();
+  document.getElementById('hDate').textContent =
+    `${now.getDate()} ${MESES[now.getMonth()]} ${now.getFullYear()}`;
+  document.getElementById('hDay').textContent = DIAS[now.getDay()];
+
+  // Default input date = today
+  document.getElementById('inDate').value = now.toISOString().split('T')[0];
+
+  async function loadItems() {
+    try {
+      const r = await fetch(API);
+      items = await r.json();
+      items = items.map(i => ({ ...i, id: i._id }));
+      loadItems();
+    } catch(e) { console.error('Erro ao carregar:', e); }
+  }
+
+  function urgency(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    const diff = Math.ceil((d - new Date(now.toDateString())) / 86400000);
+    if (diff < 0)  return '⚠️ Atrasado';
+    if (diff === 0) return '🔴 Hoje!';
+    if (diff === 1) return '🟠 Amanhã';
+    if (diff <= 3)  return `🟡 Em ${diff} dias`;
+    return `📅 ${d.getDate()}/${d.getMonth()+1}`;
+  }
+
+  function urg_class(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    const diff = Math.ceil((d - new Date(now.toDateString())) / 86400000);
+    return diff <= 1 ? 'urgente' : '';
+  }
+
+  function setFilter(f) {
+    activeFilter = f;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    event.target.classList.add('active');
+    render();
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    let filtered = activeFilter === 'todos'
+      ? [...items]
+      : items.filter(i => i.tipo === activeFilter);
+
+    // Sort: pending first, then by date
+    filtered.sort((a,b) => {
+      if (a.done !== b.done) return a.done ? 1 : -1;
+      if (!a.date && !b.date) return 0;
+      if (!a.date) return 1; if (!b.date) return -1;
+      return a.date.localeCompare(b.date);
+    });
+
+    // Stats
+    document.getElementById('statTotal').textContent = items.length;
+    document.getElementById('statProva').textContent = items.filter(i=>i.tipo==='prova').length;
+    document.getElementById('statAtiv').textContent  = items.filter(i=>i.tipo==='atividade').length;
+    document.getElementById('statDone').textContent  = items.filter(i=>i.done).length;
+
+    if (!filtered.length) {
+      list.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>Nenhum lembrete aqui ainda.<br>Adicione uma prova ou atividade acima!</p></div>`;
+      return;
+    }
+
+    list.innerHTML = filtered.map(item => {
+      const urg = urgency(item.date);
+      const urgC = urg_class(item.date);
+      return `
+        <div class="item-card ${item.tipo} ${item.done ? 'done' : ''}" id="card-${item.id}">
+          <div class="item-checkbox ${item.done?'checked':''}"
+               style="color:${item.done?typeColor(item.tipo):'transparent'}"
+               onclick="toggle('${item.id}')">
+            ${item.done ? '✓' : ''}
+          </div>
+          <div class="item-info">
+            <div class="item-title">${item.desc}</div>
+            <div class="item-meta">
+              <span class="badge ${item.tipo}">${TIPO_LABEL[item.tipo]}</span>
+              ${item.date ? `<span class="item-date ${urgC}">${urg}</span>` : ''}
+            </div>
+          </div>
+          <div class="item-actions">
+            <button class="btn-del" onclick="remove('${item.id}')">🗑</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function typeColor(t) {
+    return {prova:'#C0392B', atividade:'#2980B9', trabalho:'#1A6B3C', outro:'#8E44AD'}[t];
+  }
+
+  async function addItem() {
+    const desc = document.getElementById('inDesc').value.trim();
+    if (!desc) { document.getElementById('inDesc').focus(); return; }
+    const body = {
+      desc,
+      date: document.getElementById('inDate').value,
+      tipo: document.getElementById('inTipo').value
+    };
+    const r = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const item = await r.json();
+    items.push({ ...item, id: item._id });
+    render();
+    document.getElementById('inDesc').value = '';
+    document.getElementById('inDesc').focus();
+  }
+
+  async function toggle(id) {
+    const item = items.find(x => x.id === id);
+    if (!item) return;
+    item.done = !item.done;
+    render();
+    await fetch(`${API}/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ done: item.done })
+    });
+  }
+
+  async function remove(id) {
+    items = items.filter(x => x.id !== id);
+    render();
+    await fetch(`${API}/${id}`, { method: 'DELETE' });
+  }
+
+  // Enter key
+  document.getElementById('inDesc').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addItem();
+  });
+
+  render();
+</script>
+</body>
+</html>
