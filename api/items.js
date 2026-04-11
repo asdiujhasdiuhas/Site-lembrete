@@ -1,8 +1,7 @@
 import { MongoClient } from "mongodb";
 
-const client = new MongoClient(process.env.Armazenamento_MONGODB_URI);
-
 async function getCollection() {
+  const client = new MongoClient(process.env.Armazenamento_MONGODB_URI);
   await client.connect();
   return client.db("efgnl").collection("items");
 }
