@@ -3,7 +3,7 @@ import { MongoClient, ObjectId } from "mongodb";
 async function getCollection() {
   const client = new MongoClient(process.env.Armazenamento_MONGODB_URI);
   await client.connect();
-  return client.db("efgnl").collection("items");
+  return client.db("Lembrete").collection("items");
 }
 
 export default async function handler(req, res) {

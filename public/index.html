@@ -432,7 +432,7 @@
       const r = await fetch(API);
       items = await r.json();
       items = items.map(i => ({ ...i, id: i._id }));
-      loadItems();
+      window.onload = loadItems;
     } catch(e) { console.error('Erro ao carregar:', e); }
   }
 
