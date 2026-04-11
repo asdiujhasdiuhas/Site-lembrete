@@ -428,18 +428,19 @@
   document.getElementById('inDate').value = now.toISOString().split('T')[0];
 
   async function loadItems() {
-    try {
-      const r = await fetch(API);
-      items = await r.json();
-      items = items.map(i => ({ ...i, id: i._id }));
-      if (document.readyState === 'complete') {
-    loadItems();
-  } else {
-    window.addEventListener('load', loadItems);
-  }
-    } catch(e) { console.error('Erro ao carregar:', e); }
-  }
+  try {
+    const r = await fetch(API);
+    items = await r.json();
+    items = items.map(i => ({ ...i, id: i._id }));
+    render();
+  } catch(e) { console.error('Erro ao carregar:', e); }
+}
 
+if (document.readyState === 'complete') {
+  loadItems();
+} else {
+  window.addEventListener('load', loadItems);
+}
   function urgency(dateStr) {
     if (!dateStr) return '';
     const d = new Date(dateStr + 'T00:00:00');
