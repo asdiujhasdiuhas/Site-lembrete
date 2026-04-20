@@ -544,12 +544,77 @@
     }, duration);
   }
 
+  // System notification (browser notification)
+  function requestNotificationPermission() {
+    if (!('Notification' in window)) {
+      console.log('This browser does not support desktop notification');
+      return Promise.reject('No support');
+    }
+    if (Notification.permission === 'granted') {
+      return Promise.resolve();
+    }
+    if (Notification.permission === 'denied') {
+      console.log('Notification permission denied.');
+      return Promise.reject('Denied');
+    }
+    return Notification.requestPermission().then(permission => {
+      if (permission === 'granted') {
+        return Promise.resolve();
+      } else {
+        return Promise.reject('Not granted');
+      }
+    });
+  }
+
+  function showSystemNotification(title, body) {
+    if (Notification.permission === 'granted') {
+      new Notification(title, { body, icon: '/favicon.ico' });
+    }
+  }
+
+  function checkAndNotify() {
+    // Avoid duplicate notifications: track notified items in localStorage
+    const notifiedKey = 'efgnl_notified_items';
+    const notified = JSON.parse(localStorage.getItem(notifiedKey) || '{}');
+    const now = new Date();
+    const today = new Date(now.toDateString()); // midnight today
+
+    items.forEach(item => {
+      if (item.done) return;
+      if (!item.date) return;
+      const itemDate = new Date(item.date + 'T00:00:00');
+      const diffTime = itemDate - today;
+      const diffDays = Math.ceil(diffTime / 86400000);
+      // Notify if within 0 to 3 days (including today)
+      if (diffDays >= 0 && diffDays <= 3) {
+        const notifyKey = `${item.id}-${diffDays}`;
+        if (!notified[notifyKey]) {
+          const title = 'Lembrete EFGNL';
+          const body = `Você tem um ${TIPO_LABEL[item.tipo].toLowerCase()} "${item.desc}" em ${diffDays === 0 ? 'hoje' : diffDays === 1 ? 'amanhã' : `em ${diffDays} dias`}.`;
+          showSystemNotification(title, body);
+          notified[notifyKey] = true;
+        }
+      }
+    });
+    localStorage.setItem(notifiedKey, JSON.stringify(notified));
+  }
+
   async function loadItems() {
   try {
     const r = await fetch(API);
     items = await r.json();
     items = items.map(i => ({ ...i, id: i._id }));
     render();
+    // Request notification permission if not already granted or denied
+    if (Notification.permission === 'default') {
+      try {
+        await requestNotificationPermission();
+      } catch (err) {
+        console.log('Notification permission not granted');
+      }
+    }
+    // Check for system notifications after loading items
+    checkAndNotify();
   } catch(e) { console.error('Erro ao carregar:', e); }
 }
 
